@@ -1,22 +1,79 @@
-import { NextResponse } from "next/server";
-import { getSupabaseAdmin } from "@/lib/supabase";
+import { NextRequest, NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/lib/supabase';
+import { ApiResponse, AuditResult } from '@/types';
+import { validate as isUuid } from 'uuid';
 
-type RouteContext = {
-  params: { id: string };
-};
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+    const isPublic = req.nextUrl.searchParams.get('public') === 'true';
 
-export async function GET(_request: Request, { params }: RouteContext) {
-  const supabase = getSupabaseAdmin();
+    // 1. Validate ID
+    if (!id || !isUuid(id)) {
+      return NextResponse.json<ApiResponse<any>>({
+        success: false,
+        error: 'Invalid audit ID format',
+      }, { status: 400 });
+    }
 
-  if (!supabase) {
-    return NextResponse.json({ error: "Supabase is not configured." }, { status: 503 });
+    // 2. Fetch from Supabase
+    // If it's a public request, we search by public_token instead of id
+    const query = supabaseAdmin
+      .from('audits')
+      .select('*');
+    
+    if (isPublic) {
+        query.eq('public_token', id);
+    } else {
+        query.eq('id', id);
+    }
+
+    const { data: audit, error } = await query.single();
+
+    if (error || !audit) {
+      return NextResponse.json<ApiResponse<any>>({
+        success: false,
+        error: 'Audit not found',
+      }, { status: 404 });
+    }
+
+    // 4. Strip PII if public
+    const result: AuditResult = {
+      id: audit.id,
+      publicToken: audit.public_token,
+      createdAt: audit.created_at,
+      formData: {
+        teamSize: audit.team_size,
+        useCase: audit.primary_use_case,
+        tools: audit.tools,
+      },
+      recommendations: audit.results,
+      totalMonthlySavings: audit.total_monthly_savings,
+      totalAnnualSavings: audit.total_annual_savings,
+      isHighSavings: audit.is_high_savings,
+      isOptimal: audit.total_monthly_savings < 100,
+      aiSummary: audit.ai_summary,
+    };
+
+    if (isPublic) {
+      // In our mapping above we don't even include email/company_name from DB 
+      // but if we were using a spread, we'd delete them here.
+      // AuditResult type doesn't have email/company_name.
+    }
+
+    return NextResponse.json<ApiResponse<AuditResult>>({
+      success: true,
+      data: result,
+    });
+
+  } catch (error: any) {
+    console.error('API Get Audit Error:', error);
+    return NextResponse.json<ApiResponse<any>>({
+      success: false,
+      error: 'An unexpected error occurred',
+    }, { status: 500 });
   }
-
-  const { data, error } = await supabase.from("audits").select("payload").eq("id", params.id).single();
-
-  if (error || !data) {
-    return NextResponse.json({ error: "Audit not found." }, { status: 404 });
-  }
-
-  return NextResponse.json(data.payload);
 }

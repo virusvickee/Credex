@@ -12,3 +12,5 @@ export function getSupabaseAdmin() {
     auth: { persistSession: false },
   });
 }
+
+export const supabaseAdmin = getSupabaseAdmin()!;

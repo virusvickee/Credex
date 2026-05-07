@@ -1,28 +1,91 @@
-import { NextResponse } from "next/server";
-import { z } from "zod";
-import { calculateAudit } from "@/lib/audit-engine";
-import { getSupabaseAdmin } from "@/lib/supabase";
+import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+import { runAudit } from '@/lib/audit-engine';
+import { supabaseAdmin } from '@/lib/supabase';
+import { generateSummary } from '@/lib/anthropic';
+import { ApiResponse } from '@/types';
+import { v4 as uuidv4 } from 'uuid';
 
-const auditSchema = z.object({
-  tools: z.array(z.object({
-    id: z.string(),
-    name: z.string().min(1),
-    category: z.enum(["coding", "design", "writing", "meeting", "search", "other"]),
-    seats: z.number().min(1),
-    monthlyCost: z.number().min(0),
-    billingCycle: z.enum(["monthly", "annual"]),
-    usageScore: z.number().min(0).max(100),
-  })).min(1),
+const toolInputSchema = z.object({
+  toolId: z.string(),
+  planId: z.string(),
+  seats: z.number().min(1),
+  monthlySpend: z.number().min(0),
 });
 
-export async function POST(request: Request) {
-  const payload = auditSchema.parse(await request.json());
-  const audit = calculateAudit(payload.tools);
-  const supabase = getSupabaseAdmin();
+const auditSchema = z.object({
+  teamSize: z.number().min(1).max(500),
+  useCase: z.enum(['coding', 'writing', 'data', 'research', 'mixed']),
+  tools: z.array(toolInputSchema).min(1).max(8),
+});
 
-  if (supabase) {
-    await supabase.from("audits").insert({ id: audit.id, payload: audit });
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    
+    // 1. Validate
+    const validation = auditSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json<ApiResponse<any>>({
+        success: false,
+        error: validation.error.message,
+      }, { status: 400 });
+    }
+
+    const formData = validation.data;
+
+    // 2. Run Audit Engine
+    const auditResults = runAudit(formData as any);
+
+    // 3. Generate AI Summary
+    const summaryResult = await generateSummary({
+      recommendations: auditResults.recommendations,
+      totalMonthlySavings: auditResults.totalMonthlySavings,
+      totalAnnualSavings: auditResults.totalAnnualSavings,
+      useCase: formData.useCase as any,
+      teamSize: formData.teamSize,
+    });
+
+    // 4. Save to Supabase
+    const publicToken = uuidv4();
+    const { data: audit, error } = await supabaseAdmin
+      .from('audits')
+      .insert({
+        team_size: formData.teamSize,
+        primary_use_case: formData.useCase,
+        tools: formData.tools,
+        results: auditResults.recommendations,
+        total_monthly_savings: auditResults.totalMonthlySavings,
+        total_annual_savings: auditResults.totalAnnualSavings,
+        ai_summary: summaryResult.summary,
+        is_high_savings: auditResults.isHighSavings,
+        public_token: publicToken,
+      })
+      .select('id')
+      .single();
+
+    if (error) {
+      console.error('Supabase error:', error);
+      return NextResponse.json<ApiResponse<any>>({
+        success: false,
+        error: 'Failed to save audit',
+      }, { status: 500 });
+    }
+
+    // 5. Return
+    return NextResponse.json<ApiResponse<{ id: string; publicToken: string }>>({
+      success: true,
+      data: {
+        id: audit.id,
+        publicToken: publicToken,
+      },
+    });
+
+  } catch (error: any) {
+    console.error('API Audit Error:', error);
+    return NextResponse.json<ApiResponse<any>>({
+      success: false,
+      error: 'An unexpected error occurred',
+    }, { status: 500 });
   }
-
-  return NextResponse.json(audit);
 }
