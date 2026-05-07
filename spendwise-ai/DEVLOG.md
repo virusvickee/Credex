@@ -1,0 +1,99 @@
+# Development Log
+
+## Day 1 — 2026-05-01
+**Hours worked:** 4
+**What I did:**
+Set up the Next.js 14 project with TypeScript strict mode, Tailwind, and shadcn/ui. Spent more time than expected debugging the shadcn CLI — the old shadcn-ui@latest package is deprecated and the new CLI has different syntax. Set up Supabase project, created audits and leads tables with RLS policies. Added all environment variables.
+
+**What I learned:**
+shadcn now uses a different init command. Toast component was removed from the registry and needs to be added manually (or use Sonner). Supabase RLS policies need to be set correctly or all queries silently fail.
+
+**Blockers / what I'm stuck on:**
+Supabase anon key vs service role key confusion — anon key for client, service role only on server. Took 30 mins to figure out why client queries failed.
+
+**Plan for tomorrow:**
+Define all TypeScript types, add pricing data for all 8 tools, start audit engine.
+
+## Day 2 — 2026-05-02
+**Hours worked:** 5
+**What I did:**
+Defined all TypeScript types in types/index.ts — ToolId, FormData, AuditResult, AuditRecommendation. Added verified pricing data for all 8 tools with official URLs. Started audit engine — implemented checkPlanSize() and checkDuplicates() rules.
+
+**What I learned:**
+Pricing pages are inconsistent — Gemini calls their plan "Google One AI Premium" not "Gemini Advanced". Had to verify each number against the actual pricing page. GitHub Copilot individual plan is $10/mo OR $100/year — need to handle both in the engine.
+
+**Blockers / what I'm stuck on:**
+Not sure how to handle usage-based tools (Anthropic API, OpenAI API) in the audit engine since they have no fixed per-seat price. Decided to treat them as single-seat with $0 base price and flag them only if they have a duplicate subscription.
+
+**Plan for tomorrow:**
+Finish all 6 audit engine rules, write 10 tests.
+
+## Day 3 — 2026-05-03
+**Hours worked:** 6
+**What I did:**
+Completed all 6 audit engine rules: checkPlanSize, checkUseCaseFit, checkDuplicates, checkApiVsSubscription, checkSeatMismatch, and keep fallback. Wrote 10 Vitest tests — all passing. Built the full form UI with Zustand persistence, tool selector grid, and ToolRows with auto-calculate toggle.
+
+**What I learned:**
+First-match-wins rule ordering matters a lot. Initially had checkSeatMismatch run before checkDuplicates — this caused API tools to trigger seat mismatch warnings because their listed price is $0. Fixed by running duplicate check first.
+
+**Blockers / what I'm stuck on:**
+Zustand persist middleware types are tricky with TypeScript strict mode. Had to add explicit type annotations to the store to avoid implicit any errors.
+
+**Plan for tomorrow:**
+Build all 4 API routes, test with PowerShell.
+
+## Day 4 — 2026-05-04
+**Hours worked:** 5
+**What I did:**
+Built all 4 API routes: POST /api/audit, GET /api/audit/[id], POST /api/lead, POST /api/summary. Implemented Zod validation, rate limiting, honeypot, and disposable email blocking. Tested all routes with PowerShell Invoke-RestMethod. Verified Supabase rows and received confirmation email.
+
+**What I learned:**
+PowerShell uses backtick for line continuation, not backslash. Spent 20 mins confused by this. Also learned that Resend free tier only sends to verified emails — need to verify my email address first before testing.
+
+**Blockers / what I'm stuck on:**
+Rate limiting with in-memory Map resets on every hot reload in dev. Hard to test properly. Worked around by temporarily setting limit to 1 for testing.
+
+**Plan for tomorrow:**
+Build audit results page UI — SavingsHero, ToolBreakdown, AIsummary, ShareBar, LeadCaptureModal.
+
+## Day 5 — 2026-05-05
+**Hours worked:** 6
+**What I did:**
+Built complete audit results page with all components. SavingsHero has animated count-up using useEffect. ToolBreakdown shows per-tool cards with action badges. LeadCaptureModal opens via Radix Dialog for a premium feel. ShareBar has Twitter (X) and LinkedIn share buttons with proper og: meta tags on the page.
+
+**What I learned:**
+Next.js server components cannot use useState or useEffect — had to carefully separate server and client components. The results page itself is a server component (for SEO) but SavingsHero, ShareBar, and LeadCaptureModal are client components.
+
+**Blockers / what I'm stuck on:**
+OG image generation needs a separate API route. Skipped for now, will add as bonus if time permits.
+
+**Plan for tomorrow:**
+Write all documentation files, deploy to Vercel.
+
+## Day 6 — 2026-05-06
+**Hours worked:** 4
+**What I did:**
+Wrote README.md, ARCHITECTURE.md, PRICING_DATA.md, PROMPTS.md, TESTS.md. Deployed to Vercel — ran into env variable issues (NEXT_PUBLIC_ vars need to be set in Vercel dashboard, not just .env.local).
+
+**What I learned:**
+Vercel requires NEXT_PUBLIC_ variables to be set at build time, not just runtime. Had to redeploy after adding them to the Vercel dashboard. Also learned that Supabase connection pooling needs to be enabled for serverless functions at scale.
+
+**Blockers / what I'm stuck on:**
+Lighthouse accessibility score is 87 — below the required 90. Need to add aria-labels to icon buttons and fix color contrast on muted text.
+
+**Plan for tomorrow:**
+Fix accessibility issues, final testing.
+
+## Day 7 — 2026-05-07
+**Hours worked:** 5
+**What I did:**
+Fixed accessibility issues — added aria-labels to all icon buttons, improved color contrast ratios, added skip-to-content link. Lighthouse scores now: Performance 91, Accessibility 93, Best Practices 92. Completed all documentation. Final end-to-end test — form → audit → results → email all working. Submitted.
+
+**What I learned:**
+User interviews (conducted via friend networks) revealed that founders don't think about AI spend monthly — they think about it at renewal time. This changes the GTM strategy: target people who just got a renewal notice.
+
+**Blockers / what I'm stuck on:**
+None — shipped!
+
+**Plan for tomorrow:**
+N/A — submitted.
