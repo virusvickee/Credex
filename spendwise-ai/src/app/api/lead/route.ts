@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     // 1. Validate
     const validation = leadSchema.safeParse(body);
     if (!validation.success) {
-      return NextResponse.json<ApiResponse<any>>({
+      return NextResponse.json<ApiResponse<null>>({
         success: false,
         error: validation.error.message,
       }, { status: 400 });
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     const limit = rateLimit.get(ip);
     if (limit && now < limit.resetAt) {
       if (limit.count >= 3) {
-        return NextResponse.json<ApiResponse<any>>({
+        return NextResponse.json<ApiResponse<null>>({
           success: false,
           error: 'Too many submissions. Try again later.',
         }, { status: 429 });
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
     // c) Disposable Email Check
     const domain = email.split('@')[1];
     if (DISPOSABLE_DOMAINS.includes(domain)) {
-      return NextResponse.json<ApiResponse<any>>({
+      return NextResponse.json<ApiResponse<null>>({
         success: false,
         error: 'Please use a valid work email',
       }, { status: 400 });
@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (auditError || !audit) {
-      return NextResponse.json<ApiResponse<any>>({
+      return NextResponse.json<ApiResponse<null>>({
         success: false,
         error: 'Audit not found',
       }, { status: 404 });
@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
 
     if (leadError) {
       console.error('Lead insertion error:', leadError);
-      return NextResponse.json<ApiResponse<any>>({
+      return NextResponse.json<ApiResponse<null>>({
         success: false,
         error: 'Failed to process lead',
       }, { status: 500 });
@@ -138,11 +138,12 @@ export async function POST(req: NextRequest) {
       data: { leadId: lead.id },
     });
 
-  } catch (error: any) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'An unexpected error occurred';
     console.error('API Lead Error:', error);
-    return NextResponse.json<ApiResponse<any>>({
+    return NextResponse.json<ApiResponse<null>>({
       success: false,
-      error: 'An unexpected error occurred',
+      error: message,
     }, { status: 500 });
   }
 }

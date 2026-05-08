@@ -13,7 +13,7 @@ export async function GET(
 
     // 1. Validate ID
     if (!id || !isUuid(id)) {
-      return NextResponse.json<ApiResponse<any>>({
+      return NextResponse.json<ApiResponse<null>>({
         success: false,
         error: 'Invalid audit ID format',
       }, { status: 400 });
@@ -34,7 +34,7 @@ export async function GET(
     const { data: audit, error } = await query.single();
 
     if (error || !audit) {
-      return NextResponse.json<ApiResponse<any>>({
+      return NextResponse.json<ApiResponse<null>>({
         success: false,
         error: 'Audit not found',
       }, { status: 404 });
@@ -69,11 +69,12 @@ export async function GET(
       data: result,
     });
 
-  } catch (error: any) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'An unexpected error occurred';
     console.error('API Get Audit Error:', error);
-    return NextResponse.json<ApiResponse<any>>({
+    return NextResponse.json<ApiResponse<null>>({
       success: false,
-      error: 'An unexpected error occurred',
+      error: message,
     }, { status: 500 });
   }
 }

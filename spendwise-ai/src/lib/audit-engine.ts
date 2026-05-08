@@ -4,7 +4,7 @@ import type { AuditToolInput, LegacyAuditResult, ToolRecommendation } from "@/ty
 import { FormData, AuditRecommendation, ToolInput, UseCase, ToolId } from "@/types";
 import { getToolById, getPlanById } from "@/lib/pricing-data";
 
-export function calculateSavings(current: number, projected: number, seats: number): { monthly: number, annual: number } {
+export function calculateSavings(current: number, projected: number): { monthly: number, annual: number } {
   const monthly = Math.max(0, current - projected);
   const annual = monthly * 12;
   return { monthly, annual };
@@ -46,7 +46,7 @@ export function checkDuplicates(tools: ToolInput[]): Map<ToolId, string> {
   return duplicates;
 }
 
-export function checkPlanSize(tool: ToolInput, teamSize: number): AuditRecommendation | null {
+export function checkPlanSize(tool: ToolInput): AuditRecommendation | null {
   const planInfo = getPlanById(tool.toolId, tool.planId);
   if (!planInfo) return null;
 
@@ -61,7 +61,7 @@ export function checkPlanSize(tool: ToolInput, teamSize: number): AuditRecommend
     
     if (individualPlan) {
       const projectedMonthlySpend = individualPlan.monthlyPricePerSeat * tool.seats;
-      const savings = calculateSavings(tool.monthlySpend, projectedMonthlySpend, tool.seats);
+      const savings = calculateSavings(tool.monthlySpend, projectedMonthlySpend);
       const diffPerUser = Math.max(0, (tool.monthlySpend - projectedMonthlySpend) / tool.seats);
       
       return {
@@ -232,7 +232,7 @@ export function checkSeatMismatch(tool: ToolInput): AuditRecommendation | null {
   return null;
 }
 
-export function evaluateTool(tool: ToolInput, allTools: ToolInput[], useCase: UseCase, teamSize: number): AuditRecommendation {
+export function evaluateTool(tool: ToolInput, allTools: ToolInput[], useCase: UseCase): AuditRecommendation {
   const toolInfo = getToolById(tool.toolId);
   const planInfo = getPlanById(tool.toolId, tool.planId);
   
@@ -273,7 +273,7 @@ export function evaluateTool(tool: ToolInput, allTools: ToolInput[], useCase: Us
   if (apiRec) return apiRec;
 
   // 3. Check Wrong Plan Size (Rule 1)
-  const planSizeRec = checkPlanSize(tool, teamSize);
+  const planSizeRec = checkPlanSize(tool);
   if (planSizeRec) return planSizeRec;
 
   // 4. Check Overpaying for Use Case (Rule 2)
@@ -306,7 +306,7 @@ export function runAudit(formData: FormData): {
   isHighSavings: boolean
   isOptimal: boolean
 } {
-  const recommendations = formData.tools.map(tool => evaluateTool(tool, formData.tools, formData.useCase, formData.teamSize));
+  const recommendations = formData.tools.map(tool => evaluateTool(tool, formData.tools, formData.useCase));
   
   const totalMonthlySavings = recommendations.reduce((sum, rec) => sum + rec.monthlySavings, 0);
   const totalAnnualSavings = recommendations.reduce((sum, rec) => sum + rec.annualSavings, 0);

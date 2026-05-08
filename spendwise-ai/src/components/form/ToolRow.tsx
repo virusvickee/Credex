@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { X, Calculator } from 'lucide-react';
 import { ToolId, ToolInput } from '@/types';
 import { TOOLS, getPlanById } from '@/lib/pricing-data';

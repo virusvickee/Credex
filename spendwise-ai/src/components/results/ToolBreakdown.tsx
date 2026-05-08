@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Info, ArrowDownRight, Check, AlertTriangle } from "lucide-react";
 import type { AuditRecommendation } from "@/types";

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { ToolId, UseCase, ToolInput } from '@/types';
-import { TOOLS, getPlanById } from '@/lib/pricing-data';
+import { TOOLS } from '@/lib/pricing-data';
 
 interface FormState {
   teamSize: number;

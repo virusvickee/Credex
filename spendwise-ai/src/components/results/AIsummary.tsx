@@ -20,7 +20,7 @@ export function AIsummary({ summary }: AIsummaryProps) {
       <CardContent className="p-8 relative">
         <Sparkles className="absolute top-4 right-4 h-6 w-6 text-emerald-500/20" />
         <p className="text-slate-300 leading-relaxed font-medium italic">
-          "{summary}"
+          &quot;{summary}&quot;
         </p>
         <div className="mt-6 flex items-center gap-3">
           <div className="flex -space-x-2">

@@ -42,13 +42,14 @@ export function LeadCaptureModal({ auditId, isOpen, onClose }: LeadCaptureModalP
       const result = await response.json();
 
       if (result.success) {
-        toast.success("Consultation requested! We'll be in touch.");
+        toast.success("Consultation requested! We&apos;ll be in touch.");
         onClose();
       } else {
         throw new Error(result.error || "Failed to submit request");
       }
-    } catch (err: any) {
-      toast.error(err.message);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Something went wrong";
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -62,7 +63,7 @@ export function LeadCaptureModal({ auditId, isOpen, onClose }: LeadCaptureModalP
           <DialogHeader>
             <DialogTitle className="text-2xl font-black text-white tracking-tight">Talk to Credex</DialogTitle>
             <DialogDescription className="text-slate-400 font-medium">
-              High-savings teams can book a deeper vendor and renewal review. We'll help you negotiate your next contract.
+              High-savings teams can book a deeper vendor and renewal review. We&apos;ll help you negotiate your next contract.
             </DialogDescription>
           </DialogHeader>
 

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { TrendingUp, CheckCircle2, ArrowRight, Zap } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 
 interface SavingsHeroProps {
   totalMonthlySavings: number;
@@ -50,8 +49,8 @@ export const SavingsHero: React.FC<SavingsHeroProps> = ({
           <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
             <CheckCircle2 className="h-8 w-8 text-emerald-400" />
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
-            You're spending efficiently ✓
+            <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
+            You&apos;re spending efficiently ✓
           </h1>
           <p className="text-lg text-slate-400">
             Your AI stack is well-optimized for your team size and use case. 
@@ -98,7 +97,7 @@ export const SavingsHero: React.FC<SavingsHeroProps> = ({
               <span className="text-2xl text-slate-500 font-medium">/mo</span>
             </div>
             <p className="text-xl text-slate-400 font-medium">
-              That's <span className="text-slate-200">${totalAnnualSavings.toLocaleString()} per year</span> 
+              That&apos;s <span className="text-slate-200">${totalAnnualSavings.toLocaleString()} per year</span> 
               {isHighSavings && ` — enough for ~${Math.floor(totalAnnualSavings / 15000)} months of a dev salary.`}
             </p>
           </div>
@@ -108,7 +107,7 @@ export const SavingsHero: React.FC<SavingsHeroProps> = ({
           <h3 className="text-lg font-bold text-white mb-4">Want to capture even more?</h3>
           <p className="text-slate-400 mb-6 text-sm leading-relaxed">
             High-savings teams can book a deeper vendor and renewal review with the Credex team. 
-            We've saved startups over $2.4M in software waste this year.
+            We&apos;ve saved startups over $2.4M in software waste this year.
           </p>
           <Button className="w-full h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]">
             Get a deeper review
