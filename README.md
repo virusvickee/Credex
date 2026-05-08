@@ -4,7 +4,7 @@
 SpendWise AI is a free web app that helps startup founders and engineering managers find out if they're overpaying for AI tools like Cursor, Claude, ChatGPT, and GitHub Copilot. Input your tools, plans, and team size — get an instant audit with specific savings recommendations. No login required.
 
 ## Live URL
-https://spendwise-ai-credex.vercel.app
+https://credex-ie5v.vercel.app
 
 ## Screenshots
 *(Add these after deployment)*
