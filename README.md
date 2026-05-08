@@ -7,7 +7,9 @@ SpendWise AI is a free web app that helps startup founders and engineering manag
 https://credex-ie5v.vercel.app
 
 ## Screenshots
-*(Add these after deployment)*
+
+![SpendWise AI Landing Page](spendwise-ai/public/screenshots/screencapture-credex-ie5v-vercel-app-2026-05-08-15_39_46.png)
+
 1. Landing page with form
 2. Audit results page
 3. Lead capture modal
