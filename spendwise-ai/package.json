@@ -7,8 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "vitest run",
+    "test": "vitest run --exclude 'src/__tests__/e2e/**'",
     "test:e2e": "playwright test",
+    "test:unit": "vitest run",
     "test:e2e:ui": "playwright test --headed",
     "test:e2e:report": "playwright show-report"
   },
