@@ -50,14 +50,14 @@ export default async function AuditPage({ params }: { params: { id: string } }) 
   const audit = await getAuditData(params.id);
 
   if (!audit) {
-    return notFound();
+    notFound();
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[#000000] text-[#ededed] flex flex-col antialiased font-sans">
       <Header />
       
-      <main className="flex-grow container max-w-5xl mx-auto px-4 py-12 md:py-20 space-y-12">
+      <main className="flex-grow container max-w-[1200px] mx-auto px-6 py-12 md:py-20 space-y-12">
         <SavingsHero 
           totalMonthlySavings={audit.totalMonthlySavings}
           totalAnnualSavings={audit.totalAnnualSavings}
@@ -68,18 +68,21 @@ export default async function AuditPage({ params }: { params: { id: string } }) 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <ToolBreakdown recommendations={audit.recommendations} />
-            <ShareBar auditId={audit.id} totalMonthlySavings={audit.totalMonthlySavings} />
+            <ShareBar auditId={audit.id} />
           </div>
           
           <div className="space-y-8">
             <AIsummary summary={audit.aiSummary || "No summary available."} />
             
-            <div className="p-8 rounded-3xl bg-emerald-500/10 border border-emerald-500/20 text-center space-y-4">
-              <h3 className="text-white font-bold text-lg">Benchmark your stack</h3>
-              <p className="text-slate-400 text-sm leading-relaxed">
+            <div className="p-8 rounded-lg bg-[#0a0a0a] border border-[#1a1a1a] text-center space-y-4">
+              <h3 className="text-[#ededed] font-semibold text-lg tracking-tight">Benchmark your stack</h3>
+              <p className="text-[#666666] text-sm leading-relaxed">
                 See how your team compares to 500+ startups in our network.
               </p>
-              <button className="w-full h-12 bg-white text-slate-950 font-black rounded-xl hover:bg-slate-200 transition-colors uppercase tracking-widest text-xs">
+              <button 
+                id="consult-trigger"
+                className="w-full h-10 bg-[#ededed] text-[#000000] font-semibold rounded-md hover:bg-[#d1d1d1] transition-colors uppercase tracking-wider text-[12px]"
+              >
                 View Benchmarks
               </button>
             </div>

@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Check, ArrowRight, Loader2, Users, MousePointer2, Sparkles } from 'lucide-react';
+import Image from 'next/image';
+import { Loader2, MousePointer2, DollarSign, Zap, TrendingDown } from 'lucide-react';
 import { useFormStore } from '@/store/formStore';
 import { TOOL_LIST } from '@/lib/pricing-data';
 import { ToolRow } from './ToolRow';
@@ -16,9 +17,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
 import { UseCase } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const TOOL_LOGOS: Record<string, string> = {
+  cursor: '/logos/cursor.png',
+  github_copilot: '/logos/github-copilot.png',
+  claude: '/logos/claude.png',
+  chatgpt: '/logos/chatgpt.svg',
+  anthropic_api: '/logos/anthropic.png',
+  openai_api: '/logos/openai.svg',
+  gemini: '/logos/gemini.svg',
+  windsurf: '/logos/windsurf.png',
+};
 
 export const SpendForm = () => {
   const router = useRouter();
@@ -63,158 +74,182 @@ export const SpendForm = () => {
   };
 
   return (
-    <div id="audit-form" className="w-full max-w-5xl mx-auto space-y-20 pb-32">
-      {/* SECTION 1 — Refined Hero */}
-      <section className="relative pt-20 pb-10 text-center space-y-8 overflow-hidden">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="flex justify-center mb-6"
-        >
-          <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase">
-            <Users className="h-3 w-3 mr-2" />
-            Join 500+ efficiency-first teams
-          </Badge>
-        </motion.div>
+    <div id="audit-form" className="w-full max-w-[1200px] mx-auto px-6 pb-32">
+      {/* SECTION 1 — Vercel Style Hero */}
+      <section className="pt-[120px] pb-[80px] max-w-[640px] mx-auto text-center">
+        <div className="inline-flex items-center gap-2 border border-[#1a1a1a] rounded-full px-3 py-1 mb-8">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#00e5a0] animate-pulse" />
+          <span className="text-[11px] text-[#666666] tracking-[0.05em] uppercase font-medium">500+ teams audited</span>
+        </div>
         
-        <motion.h1 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.1 }}
-          className="text-5xl md:text-8xl font-black tracking-tighter text-white max-w-4xl mx-auto leading-[0.9] md:leading-[0.85]"
-        >
-          Stop the <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-200">AI Subscription Bleed</span>
-        </motion.h1>
+        <h1 className="text-[42px] md:text-[56px] font-bold tracking-[-0.04em] leading-[1.1] text-[#ededed]">
+          Find out if you&apos;re <span className="text-[#00e5a0]">overpaying</span> for AI tools
+        </h1>
         
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.4 }}
-          className="text-xl md:text-2xl text-slate-400 max-w-2xl mx-auto font-medium"
-        >
-          Identify redundancies in your stack and save thousands per year. 
-          Deterministic audit. No login. 60 seconds.
-        </motion.p>
+        <p className="text-[16px] text-[#666666] mt-6 leading-relaxed">
+          Get a free audit in 60 seconds. No login required.
+        </p>
       </section>
 
-      {/* SECTION 2 — Team Context (Bento Style) */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-        <div className="md:col-span-3 p-10 bg-slate-900/40 border border-slate-800 rounded-[2.5rem] backdrop-blur-md relative group hover:border-emerald-500/30 transition-all">
-          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-            <Users className="h-24 w-24 text-white" />
+      {/* SECTION 1.5 — Stats Bar */}
+      <div className="w-full max-w-[900px] mx-auto mb-16">
+        <div className="grid grid-cols-3 gap-4 border border-[#1a1a1a] rounded-lg bg-[#0a0a0a] p-6">
+          <div className="flex flex-col">
+            <span className="text-[28px] font-bold text-[#00e5a0] tracking-[-0.02em]">$340</span>
+            <span className="text-[12px] text-[#666666] mt-1">avg monthly savings found</span>
           </div>
-          <div className="relative space-y-4">
-            <Label htmlFor="team-size" className="text-xs font-black uppercase tracking-widest text-slate-500">Total Team Size</Label>
-            <div className="relative max-w-xs">
-               <Users className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-600" />
-               <Input
-                  id="team-size"
-                  type="number"
-                  min="1"
-                  max="500"
-                  value={teamSize}
-                  onChange={(e) => setTeamSize(Math.max(1, parseInt(e.target.value) || 1))}
-                  className="bg-slate-950 border-slate-800 pl-12 h-14 rounded-2xl focus:ring-emerald-500/20 text-xl font-bold"
-                />
-            </div>
-            <p className="text-sm text-slate-500 font-medium italic">&quot;We use this to benchmark your per-seat efficiency.&quot;</p>
+          <div className="flex flex-col border-x border-[#1a1a1a] px-4">
+            <span className="text-[28px] font-bold text-[#00e5a0] tracking-[-0.02em]">60s</span>
+            <span className="text-[12px] text-[#666666] mt-1">to complete an audit</span>
           </div>
-        </div>
-
-        <div className="md:col-span-2 p-10 bg-slate-900/40 border border-slate-800 rounded-[2.5rem] backdrop-blur-md relative group hover:border-emerald-500/30 transition-all">
-          <div className="relative space-y-4">
-            <Label htmlFor="use-case" className="text-xs font-black uppercase tracking-widest text-slate-500">Primary Focus</Label>
-            <Select value={useCase} onValueChange={(v) => setUseCase(v as UseCase)}>
-              <SelectTrigger id="use-case" className="bg-slate-950 border-slate-800 h-14 rounded-2xl focus:ring-emerald-500/20 text-lg font-bold">
-                <SelectValue placeholder="Select focus" />
-              </SelectTrigger>
-              <SelectContent className="bg-slate-950 border-slate-800 text-slate-200 rounded-2xl">
-                <SelectItem value="coding">Coding (Dev teams)</SelectItem>
-                <SelectItem value="writing">Writing & Marketing</SelectItem>
-                <SelectItem value="research">Data & Research</SelectItem>
-                <SelectItem value="mixed">Mixed Usage</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-sm text-slate-500 font-medium italic">&quot;Helps us identify cheaper specialized alternatives.&quot;</p>
+          <div className="flex flex-col pl-4">
+            <span className="text-[28px] font-bold text-[#00e5a0] tracking-[-0.02em]">8</span>
+            <span className="text-[12px] text-[#666666] mt-1">AI tools supported</span>
           </div>
         </div>
       </div>
 
-      {/* SECTION 3 — Tool Selector (Modern Grid) */}
-      <div className="space-y-10">
-        <div className="flex flex-col items-center gap-3">
-          <div className="flex items-center gap-3 px-4 py-2 bg-emerald-500/10 rounded-full border border-emerald-500/20">
-            <MousePointer2 className="h-4 w-4 text-emerald-400" />
-            <h2 className="text-sm font-black text-emerald-400 uppercase tracking-widest">Select Your Paid Tools</h2>
+      {/* SECTION 1.6 — How it works */}
+      <section id="how-it-works" className="w-full max-w-[900px] mx-auto py-[80px] px-4">
+        <h2 className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#666666] text-center mb-4">
+          HOW IT WORKS
+        </h2>
+        <h3 className="text-[32px] font-bold tracking-[-0.02em] text-[#ededed] text-center mb-16">
+          Three steps to a leaner AI stack
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Step 1 */}
+          <div className="border border-[#1a1a1a] rounded-lg bg-[#0a0a0a] p-6 hover:border-[#333333] transition-colors duration-200 relative">
+            <div className="text-[11px] font-mono text-[#333333] mb-4">01</div>
+            <DollarSign className="w-8 h-8 text-[#00e5a0] mb-4" strokeWidth={1.5} />
+            <h4 className="text-[15px] font-semibold text-[#ededed] mb-2">Enter your tools</h4>
+            <p className="text-[13px] text-[#666666] leading-relaxed">
+              Select the AI tools your team pays for. Add your plan, seat count, and monthly spend for each one.
+            </p>
+            <div className="hidden md:block absolute right-[-20px] top-[50%] -translate-y-1/2 text-[#333333] z-10">
+              →
+            </div>
+          </div>
+
+          {/* Step 2 */}
+          <div className="border border-[#1a1a1a] rounded-lg bg-[#0a0a0a] p-6 hover:border-[#333333] transition-colors duration-200 relative">
+            <div className="text-[11px] font-mono text-[#333333] mb-4">02</div>
+            <Zap className="w-8 h-8 text-[#00e5a0] mb-4" strokeWidth={1.5} />
+            <h4 className="text-[15px] font-semibold text-[#ededed] mb-2">Get your audit</h4>
+            <p className="text-[13px] text-[#666666] leading-relaxed">
+              Our engine applies 6 financial rules to identify overspend, duplicate tools, and wrong-sized plans.
+            </p>
+            <div className="hidden md:block absolute right-[-20px] top-[50%] -translate-y-1/2 text-[#333333] z-10">
+              →
+            </div>
+          </div>
+
+          {/* Step 3 */}
+          <div className="border border-[#1a1a1a] rounded-lg bg-[#0a0a0a] p-6 hover:border-[#333333] transition-colors duration-200 relative">
+            <div className="text-[11px] font-mono text-[#333333] mb-4">03</div>
+            <TrendingDown className="w-8 h-8 text-[#00e5a0] mb-4" strokeWidth={1.5} />
+            <h4 className="text-[15px] font-semibold text-[#ededed] mb-2">See your savings</h4>
+            <p className="text-[13px] text-[#666666] leading-relaxed">
+              Get a shareable report with specific recommendations and exact dollar savings per tool.
+            </p>
           </div>
         </div>
+      </section>
+
+      {/* SECTION 2 — Team Context (Vercel Style Cards) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
+        <div className="border border-[#1a1a1a] border-l-2 border-l-[#00e5a0] rounded-lg bg-[#0a0a0a] p-5 hover:border-[#333333] transition-colors duration-200">
+          <Label htmlFor="team-size" className="text-[11px] font-medium tracking-[0.08em] uppercase text-[#666666] mb-3 block">
+            Total Team Size
+          </Label>
+          <Input
+            id="team-size"
+            type="number"
+            min="1"
+            max="500"
+            value={teamSize}
+            onChange={(e) => setTeamSize(Math.max(1, parseInt(e.target.value) || 1))}
+            className="w-full bg-[#000000] border border-[#1a1a1a] rounded-md px-3 py-2 text-[14px] text-[#ededed] focus:border-[#333333] focus:outline-none placeholder:text-[#444444] h-10"
+          />
+        </div>
+
+        <div className="border border-[#1a1a1a] border-l-2 border-l-[#00e5a0] rounded-lg bg-[#0a0a0a] p-5 hover:border-[#333333] transition-colors duration-200">
+          <Label htmlFor="use-case" className="text-[11px] font-medium tracking-[0.08em] uppercase text-[#666666] mb-3 block">
+            Primary Focus
+          </Label>
+          <Select value={useCase} onValueChange={(v) => setUseCase(v as UseCase)}>
+            <SelectTrigger id="use-case" className="w-full bg-[#000000] border border-[#1a1a1a] rounded-md px-3 py-2 text-[14px] text-[#ededed] focus:border-[#333333] focus:outline-none h-10">
+              <SelectValue placeholder="Select focus" />
+            </SelectTrigger>
+            <SelectContent className="bg-[#0a0a0a] border border-[#1a1a1a] text-[#ededed]">
+              <SelectItem value="coding">Coding (Dev teams)</SelectItem>
+              <SelectItem value="writing">Writing & Marketing</SelectItem>
+              <SelectItem value="research">Data & Research</SelectItem>
+              <SelectItem value="mixed">Mixed Usage</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* SECTION 3 — Tool Selector Grid */}
+      <div className="mb-20">
+        <h2 className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#666666] text-center mb-6">
+          SELECT YOUR PAID TOOLS
+        </h2>
         
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {TOOL_LIST.map((tool) => {
             const selected = hasToolById(tool.id);
             return (
-              <motion.button
-                whileHover={{ y: -4, scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+              <button
                 key={tool.id}
                 onClick={() => selected ? removeTool(tool.id) : addTool(tool.id)}
                 className={`
-                  relative flex flex-col items-center justify-center h-48 rounded-[2rem] border-2 transition-all duration-300
+                  relative flex flex-col items-center justify-center h-32 rounded-lg border transition-all duration-150 cursor-pointer group
                   ${selected 
-                    ? 'bg-emerald-500/10 border-emerald-500/50 shadow-[0_0_40px_rgba(16,185,129,0.1)]' 
-                    : 'bg-slate-900/30 border-slate-800 hover:border-slate-700'}
+                    ? 'bg-[#001a12] border-[#00e5a0]' 
+                    : 'bg-[#0a0a0a] border-[#1a1a1a] hover:border-[#333333] hover:bg-[#111111]'}
                 `}
               >
                 {selected && (
-                  <motion.div 
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute top-4 right-4 bg-emerald-500 rounded-full p-1"
-                  >
-                    <Check className="h-3 w-3 text-slate-950 font-black" />
-                  </motion.div>
+                  <span className="absolute top-2 right-2 w-4 h-4 rounded-full bg-[#00e5a0] flex items-center justify-center">
+                    <span className="text-[#000000] text-[10px]">✓</span>
+                  </span>
                 )}
-                <span className="text-5xl mb-4 grayscale group-hover:grayscale-0 transition-all">
-                  {tool.id === 'cursor' && '🚀'}
-                  {tool.id === 'github_copilot' && '🐙'}
-                  {tool.id === 'claude' && '🤖'}
-                  {tool.id === 'chatgpt' && '💬'}
-                  {tool.id === 'anthropic_api' && '🏗️'}
-                  {tool.id === 'openai_api' && '⚙️'}
-                  {tool.id === 'gemini' && '✨'}
-                  {tool.id === 'windsurf' && '🏄'}
+                <span className="w-9 h-9 relative mb-3 grayscale group-hover:grayscale-0 transition-all block">
+                  <Image
+                    src={TOOL_LOGOS[tool.id]}
+                    alt={tool.name}
+                    fill
+                    className="object-contain"
+                  />
                 </span>
-                <span className={`text-sm font-black uppercase tracking-widest ${selected ? 'text-emerald-400' : 'text-slate-500'}`}>
+                <span className="text-[11px] font-medium tracking-[0.06em] uppercase text-[#a1a1a1]">
                   {tool.name}
                 </span>
-              </motion.button>
+              </button>
             );
           })}
         </div>
       </div>
 
-      {/* SECTION 4 — Details Section */}
-      <div className="space-y-10 min-h-[400px]">
-        <div className="flex items-center justify-center gap-3">
-          <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent to-slate-800"></div>
-          <div className="flex items-center gap-2 px-6 py-2 bg-slate-900 border border-slate-800 rounded-full">
-            <Sparkles className="h-4 w-4 text-emerald-400" />
-            <span className="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Audit Details</span>
-          </div>
-          <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent to-slate-800"></div>
-        </div>
+      {/* SECTION 4 — Tool Detail Rows */}
+      <div className="mb-20">
+        <h2 className="text-[11px] font-medium tracking-[0.1em] uppercase text-[#666666] text-center mb-6">
+          AUDIT DETAILS
+        </h2>
 
-        <div className="space-y-6">
+        <div className="space-y-3">
           <AnimatePresence mode="popLayout">
             {tools.length > 0 ? (
               tools.map((tool) => (
                 <motion.div 
                   key={tool.toolId}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.4 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
                 >
                   <ToolRow 
                     toolId={tool.toolId} 
@@ -223,48 +258,41 @@ export const SpendForm = () => {
                 </motion.div>
               ))
             ) : (
-              <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex flex-col items-center justify-center py-24 bg-slate-900/10 border-2 border-dashed border-slate-800/50 rounded-[3rem] text-center"
-              >
-                <div className="w-20 h-20 rounded-full bg-slate-900 flex items-center justify-center mb-6 border border-slate-800">
-                  <MousePointer2 className="h-8 w-8 text-slate-700" />
-                </div>
-                <h3 className="text-slate-300 text-xl font-bold mb-2">No tools added yet</h3>
-                <p className="text-slate-500 font-medium max-w-sm mx-auto">Select the AI subscriptions you pay for above to see your projected savings.</p>
-              </motion.div>
+              <div className="border border-dashed border-[#1a1a1a] rounded-lg p-12 flex flex-col items-center text-center">
+                <MousePointer2 className="text-[#333333] w-8 h-8 mb-4" />
+                <h3 className="text-[14px] text-[#444444] font-medium">No tools added yet</h3>
+                <p className="text-[13px] text-[#333333] mt-1">Select the AI tools you pay for above</p>
+              </div>
             )}
           </AnimatePresence>
         </div>
       </div>
 
-      {/* SECTION 5 — The Big Button */}
-      <div className="flex flex-col items-center pt-20">
-        <motion.div
-           whileHover={{ scale: 1.05 }}
-           whileTap={{ scale: 0.95 }}
-        >
+      {/* SECTION 5 — Submit */}
+      <div className="flex flex-col items-center max-w-[400px] mx-auto">
+        {tools.length === 0 ? (
+          <div className="w-full py-3 rounded-md bg-[#0a0a0a] border border-[#1a1a1a] text-[#333333] text-[14px] font-medium cursor-not-allowed text-center uppercase tracking-wider">
+            SELECT TOOLS TO CONTINUE
+          </div>
+        ) : (
           <Button
-            size="lg"
-            disabled={tools.length === 0 || isSubmitting}
+            disabled={isSubmitting}
             onClick={handleSubmit}
-            className="h-24 px-20 rounded-[2rem] bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-2xl font-black transition-all shadow-[0_20px_80px_rgba(16,185,129,0.3)] disabled:bg-slate-800 disabled:text-slate-600 disabled:shadow-none uppercase tracking-tighter"
+            className="w-full py-6 rounded-md bg-[#00e5a0] text-[#000000] text-[14px] font-semibold hover:bg-[#00c988] active:scale-[0.99] transition-all duration-150 cursor-pointer uppercase tracking-wider"
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="mr-4 h-8 w-8 animate-spin" />
-                Auditing...
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ANALYZING...
               </>
             ) : (
               <>
-                Analyze My Spend
-                <ArrowRight className="ml-4 h-8 w-8" />
+                ANALYZE MY SPEND →
               </>
             )}
           </Button>
-        </motion.div>
-        <p className="mt-8 text-sm font-bold text-slate-600 uppercase tracking-widest">
+        )}
+        <p className="mt-4 text-[11px] font-medium text-[#666666] uppercase tracking-[0.1em]">
           Results are instant & private
         </p>
       </div>

@@ -2,43 +2,42 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
 export const Header = () => {
-  const scrollToForm = () => {
-    const formElement = document.getElementById('audit-form');
-    if (formElement) {
-      formElement.scrollIntoView({ behavior: 'smooth' });
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-900 bg-slate-950/80 backdrop-blur-xl">
-      <div className="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-50 w-full border-b border-[#1a1a1a] bg-[#000000] h-[64px] flex items-center">
+      <div className="container max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-xl font-black tracking-tighter text-white">
-              SPENDWISE <span className="text-emerald-500">AI</span>
+            <span className="text-[18px] font-semibold tracking-tight text-[#ededed]">
+              SPENDWISE <span className="text-[#00e5a0]">AI</span>
             </span>
           </Link>
-          <Badge variant="secondary" className="hidden sm:flex bg-slate-900 text-slate-400 border-slate-800 font-normal">
+          <div className="hidden sm:flex border border-[#1a1a1a] text-[#666666] text-[11px] px-2 py-0.5 rounded-full">
             by Credex
-          </Badge>
+          </div>
         </div>
 
         <nav className="flex items-center gap-6">
-          <Link 
-            href="#how-it-works" 
-            className="hidden md:block text-sm font-medium text-slate-400 hover:text-emerald-400 transition-colors"
+          <button 
+            onClick={() => scrollToSection('how-it-works')}
+            className="hidden md:block text-[14px] font-medium text-[#666666] hover:text-[#ededed] transition-colors"
           >
             How it works
-          </Link>
+          </button>
           <Button 
-            onClick={scrollToForm}
-            className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-full text-xs sm:text-sm px-6"
+            onClick={() => scrollToSection('audit-form')}
+            className="bg-[#00e5a0] hover:bg-[#00c988] text-[#000000] text-[13px] font-medium px-4 py-1.5 rounded-md h-auto"
           >
-            Get audit free →
+            Get audit free
           </Button>
         </nav>
       </div>

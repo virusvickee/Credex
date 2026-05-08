@@ -7,13 +7,12 @@ import {
   DialogHeader, 
   DialogTitle, 
   DialogDescription,
-  DialogFooter
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Loader2, Mail, Building2, UserCircle, ArrowRight } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 interface LeadCaptureModalProps {
   auditId: string;
@@ -42,7 +41,7 @@ export function LeadCaptureModal({ auditId, isOpen, onClose }: LeadCaptureModalP
       const result = await response.json();
 
       if (result.success) {
-        toast.success("Consultation requested! We&apos;ll be in touch.");
+        toast.success("Consultation requested!");
         onClose();
       } else {
         throw new Error(result.error || "Failed to submit request");
@@ -57,74 +56,76 @@ export function LeadCaptureModal({ auditId, isOpen, onClose }: LeadCaptureModalP
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-slate-950 border-slate-800 sm:max-w-[425px] rounded-3xl overflow-hidden p-0">
-        <div className="bg-emerald-500/10 h-2 w-full"></div>
-        <div className="p-8 space-y-6">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-black text-white tracking-tight">Talk to Credex</DialogTitle>
-            <DialogDescription className="text-slate-400 font-medium">
-              High-savings teams can book a deeper vendor and renewal review. We&apos;ll help you negotiate your next contract.
-            </DialogDescription>
-          </DialogHeader>
+      <DialogContent className="bg-[#0a0a0a] border border-[#1a1a1a] sm:max-w-[440px] rounded-xl p-8 outline-none">
+        <DialogHeader className="space-y-2">
+          <DialogTitle className="text-[22px] font-semibold tracking-[-0.02em] text-[#ededed]">
+            Talk to Credex
+          </DialogTitle>
+          <DialogDescription className="text-[14px] text-[#666666] leading-relaxed">
+            High-savings teams can book a deeper vendor and renewal review. We&apos;ll help you negotiate your next contract.
+          </DialogDescription>
+        </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5 mt-6">
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-[11px] font-medium tracking-[0.08em] uppercase text-[#666666] block">
+              Work Email
+            </Label>
+            <Input 
+              id="email" 
+              type="email" 
+              placeholder="founder@company.com" 
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-[#000000] border border-[#1a1a1a] rounded-md px-3 py-2 text-[14px] text-[#ededed] focus:border-[#333333] focus:outline-none placeholder:text-[#444444] h-10"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-slate-500">Work Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="founder@company.com" 
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-slate-900 border-slate-800 pl-10 focus:ring-emerald-500/20"
-                />
-              </div>
+              <Label htmlFor="company" className="text-[11px] font-medium tracking-[0.08em] uppercase text-[#666666] block">
+                Company
+              </Label>
+              <Input 
+                id="company" 
+                placeholder="Acme Inc" 
+                value={companyName}
+                onChange={(e) => setCompanyName(e.target.value)}
+                className="bg-[#000000] border border-[#1a1a1a] rounded-md px-3 py-2 text-[14px] text-[#ededed] focus:border-[#333333] focus:outline-none placeholder:text-[#444444] h-10"
+              />
             </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="company" className="text-xs font-bold uppercase tracking-widest text-slate-500">Company</Label>
-                <div className="relative">
-                  <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                  <Input 
-                    id="company" 
-                    placeholder="Acme Inc" 
-                    value={companyName}
-                    onChange={(e) => setCompanyName(e.target.value)}
-                    className="bg-slate-900 border-slate-800 pl-10 focus:ring-emerald-500/20"
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="role" className="text-xs font-bold uppercase tracking-widest text-slate-500">Your Role</Label>
-                <div className="relative">
-                  <UserCircle className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
-                  <Input 
-                    id="role" 
-                    placeholder="CTO" 
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                    className="bg-slate-900 border-slate-800 pl-10 focus:ring-emerald-500/20"
-                  />
-                </div>
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="role" className="text-[11px] font-medium tracking-[0.08em] uppercase text-[#666666] block">
+                Your Role
+              </Label>
+              <Input 
+                id="role" 
+                placeholder="CTO" 
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="bg-[#000000] border border-[#1a1a1a] rounded-md px-3 py-2 text-[14px] text-[#ededed] focus:border-[#333333] focus:outline-none placeholder:text-[#444444] h-10"
+              />
             </div>
+          </div>
 
-            <DialogFooter className="pt-4">
-              <Button 
-                type="submit" 
-                disabled={isSubmitting}
-                className="w-full h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.2)]"
-              >
-                {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : "Request Consultation"}
-                {!isSubmitting && <ArrowRight className="ml-2 h-4 w-4" />}
-              </Button>
-            </DialogFooter>
-          </form>
-        </div>
+          <div className="pt-4">
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full py-6 rounded-md bg-[#00e5a0] text-[#000000] text-[14px] font-semibold hover:bg-[#00c988] active:scale-[0.99] transition-all duration-150 cursor-pointer uppercase tracking-wider"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  ANALYZING...
+                </>
+              ) : (
+                "Request Consultation"
+              )}
+            </Button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   );

@@ -1,18 +1,16 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Copy, Check, Share2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface ShareBarProps {
   auditId: string;
-  totalMonthlySavings: number;
 }
 
-export function ShareBar({ auditId, totalMonthlySavings }: ShareBarProps) {
+export function ShareBar({ auditId }: ShareBarProps) {
   const [copied, setCopied] = useState(false);
-  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000'}/audit/${auditId}?public=true`;
+  const shareUrl = `${typeof window !== 'undefined' ? window.location.origin : (process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000')}/audit/${auditId}?public=true`;
 
   const copyToClipboard = async () => {
     try {
@@ -25,47 +23,37 @@ export function ShareBar({ auditId, totalMonthlySavings }: ShareBarProps) {
     }
   };
 
-  const tweetText = `I just found $${totalMonthlySavings}/mo in AI tool savings using SpendWise AI! Get your free audit here: ${shareUrl}`;
-
   return (
-    <div className="flex flex-col md:flex-row items-center justify-between gap-6 p-6 bg-slate-900/30 border border-slate-800 rounded-3xl backdrop-blur-sm">
-      <div className="flex items-center gap-4 flex-1 w-full overflow-hidden">
-        <div className="p-2 rounded-xl bg-slate-800 border border-slate-700">
-          <Share2 className="h-4 w-4 text-slate-400" />
-        </div>
-        <div className="flex-1 overflow-hidden">
-          <p className="text-[10px] uppercase tracking-widest font-bold text-slate-500 mb-1">Public Share Link</p>
-          <p className="text-sm text-slate-300 font-mono truncate">{shareUrl}</p>
-        </div>
-        <Button 
-          variant="outline" 
-          size="sm" 
+    <div className="border border-[#1a1a1a] rounded-lg bg-[#0a0a0a] p-5">
+      <h2 className="text-[11px] tracking-[0.1em] uppercase text-[#666666] mb-3 font-medium">
+        SHARE YOUR AUDIT
+      </h2>
+      
+      <div className="flex items-center gap-2 border border-[#1a1a1a] rounded-md bg-[#000000] px-3 py-2">
+        <p className="text-[13px] text-[#555555] truncate flex-1 font-medium">
+          {shareUrl}
+        </p>
+        
+        <button 
           onClick={copyToClipboard}
-          className="bg-slate-950 border-slate-800 hover:bg-slate-800 text-slate-200 rounded-xl"
+          className={`text-[12px] font-medium px-3 py-1 rounded-md border transition-colors flex items-center gap-2 ${
+            copied 
+              ? "text-[#00e5a0] border-[#00e5a0]/30" 
+              : "text-[#ededed] border-[#1a1a1a] hover:border-[#333333]"
+          }`}
         >
-          {copied ? <Check className="h-4 w-4 mr-2 text-emerald-400" /> : <Copy className="h-4 w-4 mr-2" />}
-          {copied ? "Copied" : "Copy"}
-        </Button>
-      </div>
-
-      <div className="flex items-center gap-3 w-full md:w-auto border-t md:border-t-0 md:border-l border-slate-800 pt-6 md:pt-0 md:pl-6">
-        <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mr-2 hidden lg:block">Share on</p>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="rounded-xl text-slate-400 hover:text-white hover:bg-slate-800"
-          onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`, '_blank')}
-        >
-          <Share2 className="h-5 w-5" />
-        </Button>
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="rounded-xl text-slate-400 hover:text-white hover:bg-slate-800"
-          onClick={() => window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`, '_blank')}
-        >
-          <Share2 className="h-5 w-5" />
-        </Button>
+          {copied ? (
+            <>
+              <Check className="h-3 w-3" />
+              COPIED
+            </>
+          ) : (
+            <>
+              <Copy className="h-3 w-3" />
+              COPY
+            </>
+          )}
+        </button>
       </div>
     </div>
   );

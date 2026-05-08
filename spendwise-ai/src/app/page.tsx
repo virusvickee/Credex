@@ -10,7 +10,7 @@ export const metadata = {
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-[#000000] text-[#ededed] flex flex-col antialiased">
       <Header />
       <main className="flex-grow">
         <SpendForm />

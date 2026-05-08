@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { TrendingUp, CheckCircle2, ArrowRight, Zap } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { CheckCircle2 } from 'lucide-react';
 
 interface SavingsHeroProps {
   totalMonthlySavings: number;
@@ -19,9 +17,17 @@ export const SavingsHero: React.FC<SavingsHeroProps> = ({
   isOptimal,
 }) => {
   const [count, setCount] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (totalMonthlySavings <= 0) return;
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (totalMonthlySavings <= 0) {
+      setCount(0);
+      return;
+    }
     
     let start = 0;
     const end = totalMonthlySavings;
@@ -43,77 +49,59 @@ export const SavingsHero: React.FC<SavingsHeroProps> = ({
 
   if (isOptimal) {
     return (
-      <div className="relative overflow-hidden rounded-3xl bg-emerald-500/5 border border-emerald-500/20 p-8 md:p-12">
-        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl"></div>
-        <div className="relative flex flex-col items-center text-center max-w-2xl mx-auto space-y-6">
-          <div className="w-16 h-16 rounded-full bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
-            <CheckCircle2 className="h-8 w-8 text-emerald-400" />
-          </div>
-            <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight">
-            You&apos;re spending efficiently ✓
+      <div className="border border-[#1a1a1a] rounded-lg bg-[#0a0a0a] p-8 text-center">
+        <div className="flex flex-col items-center max-w-2xl mx-auto space-y-4">
+          <CheckCircle2 className="h-8 w-8 text-[#00e5a0]" />
+          <h1 className="text-[32px] md:text-[40px] font-bold tracking-[-0.04em] text-[#ededed] leading-tight">
+            You&apos;re spending efficiently
           </h1>
-          <p className="text-lg text-slate-400">
-            Your AI stack is well-optimized for your team size and use case. 
-            Great job maintaining a lean operations model.
+          <p className="text-[14px] text-[#666666] leading-[1.6]">
+            Your AI stack is well-optimized for your team size and use case.
           </p>
-          <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-4 py-1">
+          <div className="text-[11px] tracking-[0.1em] uppercase text-[#666666] border border-[#1a1a1a] px-3 py-1 rounded-full">
             OPTIMIZED STACK
-          </Badge>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-slate-900/50 border border-slate-800 p-8 md:p-12">
-      {/* Background glow */}
-      <div className={`absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 rounded-full blur-[120px] ${isHighSavings ? 'bg-orange-500/10' : 'bg-emerald-500/10'}`}></div>
-      
-      <div className="relative grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <div className="space-y-6">
-          <div className="flex items-center gap-2">
-            {isHighSavings ? (
-               <Badge variant="outline" className="bg-orange-500/10 text-orange-400 border-orange-500/20 px-3 py-1">
-                <Zap className="h-3 w-3 mr-2" />
-                CRITICAL SAVINGS FOUND
-               </Badge>
-            ) : (
-              <Badge variant="outline" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-3 py-1">
-                <TrendingUp className="h-3 w-3 mr-2" />
-                OPTIMIZATION OPPORTUNITY
-              </Badge>
-            )}
-          </div>
-          
-          <h1 className="text-3xl md:text-5xl font-bold text-white tracking-tight leading-tight">
-            {isHighSavings ? "You're overspending on AI tools" : "Identify your savings potential"}
-          </h1>
-          
-          <div className="space-y-1">
-            <div className="flex items-baseline gap-2">
-              <span className={`text-6xl md:text-8xl font-black tracking-tighter ${isHighSavings ? 'text-orange-400' : 'text-emerald-400'}`}>
-                ${count.toLocaleString()}
-              </span>
-              <span className="text-2xl text-slate-500 font-medium">/mo</span>
-            </div>
-            <p className="text-xl text-slate-400 font-medium">
-              That&apos;s <span className="text-slate-200">${totalAnnualSavings.toLocaleString()} per year</span> 
-              {isHighSavings && ` — enough for ~${Math.floor(totalAnnualSavings / 15000)} months of a dev salary.`}
-            </p>
-          </div>
+    <div className="border border-[#1a1a1a] rounded-lg bg-[#0a0a0a] p-8 text-center">
+      <div className="flex flex-col items-center">
+        <h2 className="text-[11px] tracking-[0.1em] uppercase text-[#666666] mb-4 font-medium">
+          POTENTIAL MONTHLY SAVINGS
+        </h2>
+        
+        <div className="flex items-center justify-center">
+          <span className="text-[80px] font-bold tracking-[-0.04em] text-[#00e5a0] leading-none">
+            ${isMounted ? count.toLocaleString() : "0"}
+          </span>
         </div>
+        
+        <p className="text-[14px] text-[#666666] mt-4 font-medium">
+          ${totalAnnualSavings.toLocaleString()} per year
+        </p>
 
-        <div className="bg-slate-950/50 border border-slate-800 rounded-2xl p-8 backdrop-blur-sm">
-          <h3 className="text-lg font-bold text-white mb-4">Want to capture even more?</h3>
-          <p className="text-slate-400 mb-6 text-sm leading-relaxed">
-            High-savings teams can book a deeper vendor and renewal review with the Credex team. 
-            We&apos;ve saved startups over $2.4M in software waste this year.
-          </p>
-          <Button className="w-full h-12 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98]">
-            Get a deeper review
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+        {isHighSavings && (
+          <div className="mt-8 border border-[#00e5a0]/20 rounded-lg bg-[#001a12] p-6 text-left w-full max-w-2xl">
+            <h3 className="text-[13px] font-medium text-[#00e5a0] uppercase tracking-wider">
+              Qualify for Credex credits
+            </h3>
+            <p className="text-[12px] text-[#666666] mt-2 leading-relaxed">
+              Teams saving $500+/mo can access discounted AI credits through Credex. We&apos;ve saved startups over $2.4M in software waste this year.
+            </p>
+            <button 
+              onClick={() => {
+                const element = document.getElementById('consult-trigger');
+                if (element) element.click();
+              }}
+              className="text-[12px] text-[#00e5a0] mt-3 inline-block hover:underline font-medium"
+            >
+              Book consultation →
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
