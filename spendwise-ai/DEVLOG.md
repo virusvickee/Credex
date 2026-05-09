@@ -70,30 +70,25 @@ OG image generation needs a separate API route. Skipped for now, will add as bon
 **Plan for tomorrow:**
 Write all documentation files, deploy to Vercel.
 
-## Day 6 — 2026-05-06
-**Hours worked:** 4
+## Day 6 — 2026-05-09
+**Hours worked:** 3
 **What I did:**
-Wrote README.md, ARCHITECTURE.md, PRICING_DATA.md, PROMPTS.md, TESTS.md. Deployed to Vercel — ran into env variable issues (NEXT_PUBLIC_ vars need to be set in Vercel dashboard, not just .env.local).
+Deployed to Vercel successfully. Fixed port mismatch 
+issue where NEXT_PUBLIC_BASE_URL was hardcoded to 
+localhost:3000 but dev server was on localhost:3004. 
+Updated environment variables on Vercel dashboard. 
+Verified full end-to-end flow on production — form, 
+audit, results page, AI summary, email capture all 
+working. Added screenshots to README. CI is green.
 
 **What I learned:**
-Vercel requires NEXT_PUBLIC_ variables to be set at build time, not just runtime. Had to redeploy after adding them to the Vercel dashboard. Also learned that Supabase connection pooling needs to be enabled for serverless functions at scale.
+Vercel requires NEXT_PUBLIC_ variables to be set 
+at build time. Had to redeploy after adding env vars. 
+Also learned that share URL must use 
+window.location.origin not hardcoded localhost.
 
-**Blockers / what I'm stuck on:**
-Lighthouse accessibility score is 87 — below the required 90. Need to add aria-labels to icon buttons and fix color contrast on muted text.
-
-**Plan for tomorrow:**
-Fix accessibility issues, final testing.
-
-## Day 7 — 2026-05-07
-**Hours worked:** 5
-**What I did:**
-Fixed accessibility issues — added aria-labels to all icon buttons, improved color contrast ratios, added skip-to-content link. Lighthouse scores now: Performance 91, Accessibility 93, Best Practices 92. Completed all documentation. Final end-to-end test — form → audit → results → email all working. Submitted.
-
-**What I learned:**
-User interviews (conducted via friend networks) revealed that founders don't think about AI spend monthly — they think about it at renewal time. This changes the GTM strategy: target people who just got a renewal notice.
-
-**Blockers / what I'm stuck on:**
-None — shipped!
+**Blockers:**
+None — all systems working on production.
 
 **Plan for tomorrow:**
-N/A — submitted.
+Final submission. Run full checklist one more time.
